@@ -5,7 +5,7 @@ from discord.ext import commands
 from discord.utils import get
 import requests
 
-from scraper import scrapeStar
+from scraper import scrapeStar, starFootball
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -64,5 +64,14 @@ async def nytimes(ctx):
     else:
         await ctx.channel.send('Having trouble connecting to the NYTimes API')
 
+@bot.command(name='football')
+async def footballNews(ctx):
+    await ctx.channel.send('Scraping Realtime Football News. Give me a second.')
+    stories = starFootball()
+    embed=discord.Embed(title="Football News", description="Football News Scraped From the Star", color=0xff0000)
+    for story in stories.keys():
+        embed.add_field(name=story, value= f" [Read More]({stories[story]})", inline=False)
+    
+    await ctx.channel.send(embed=embed)
 
 bot.run(TOKEN)
