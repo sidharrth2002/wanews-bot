@@ -25,7 +25,7 @@ async def on_ready():
 @bot.command(name='sports')
 async def sportsHeadlines(ctx):
     await ctx.channel.send('Here are Curated Sports Headlines (Beware of Tabloids)')
-    response = requests.get(f'https://newsapi.org/v2/top-headlines?country=my&category=sports&apiKey={NEWS_API_KEY}')
+    response = requests.get(f'https://newsapi.org/v2/top-headlines?country=gb&category=sports&apiKey={NEWS_API_KEY}')
     if(response.status_code == 200):
         response = response.json()
         print(response)
