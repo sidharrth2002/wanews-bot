@@ -18,12 +18,8 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 @bot.event
 async def on_ready():
     print('News Bot fired up')
-    guild = discord.utils.get(bot.guilds, name=GUILD)
-    print(guild)
-    print(f'The current guild is {guild.name}')
-
-    memberlist = [member.name for member in guild.members]
-    print(memberlist)
+    # memberlist = [member.name for member in guild.members]
+    # print(memberlist)
 
 @bot.command(name='sportsHeadlines')
 async def sportsHeadlines(ctx):
