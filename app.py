@@ -14,7 +14,7 @@ NEWS_API_KEY = os.getenv('NEWS_API_KEY')
 NYTIMES_API_KEY = os.getenv('NYTIMES_API_KEY')
 
 intents = discord.Intents.default()
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 
 @bot.event
 async def on_ready():
