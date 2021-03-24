@@ -30,6 +30,7 @@ def scrapeStar():
 
     return stories
 
+#page dynamically generated, have to use selenium
 def starFootball():
     #if on heroku, configure selenium first
     if(os.environ.get("GOOGLE_CHROME_BIN") and os.environ.get("CHROMEDRIVER_PATH")):

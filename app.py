@@ -19,8 +19,6 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 @bot.event
 async def on_ready():
     print('News Bot fired up')
-    # memberlist = [member.name for member in guild.members]
-    # print(memberlist)
 
 @bot.command(name='sports')
 async def sportsHeadlines(ctx):
@@ -72,6 +70,15 @@ async def footballNews(ctx):
     for story in stories.keys():
         embed.add_field(name=story, value= f" [Read More]({stories[story]})", inline=False)
     
+    await ctx.channel.send(embed=embed)
+
+@bot.command(name='help')
+async def help(ctx):
+    embed=discord.Embed(title="Commands Available", description="Here are commands you can try.", color=0xff0000)
+    embed.add_field(name="!sports", value="Sports Headlines From Around the World", inline=False)
+    embed.add_field(name="!thestar", value="National headlines from the star", inline=False)
+    embed.add_field(name='!nytimes', value="Most Read Stories in the New York Times", inline=False)
+    embed.add_field(name='!football', value="Football news from the star", inline=False)
     await ctx.channel.send(embed=embed)
 
 bot.run(TOKEN)
