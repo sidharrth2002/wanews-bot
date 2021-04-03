@@ -1,11 +1,14 @@
 import os
 import discord
 from dotenv import load_dotenv
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord.utils import get
 import requests
 from scraper import scrapeStar, starFootball, getArticleStar
 from nlpengine import createCloud
+import datetime
+import redis
+r = redis.Redis()
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -102,4 +105,28 @@ async def overview(ctx):
 async def bigplayers(ctx):
     print('Who did the news talk about?')
 
+#scrape every half an hour and store in redis to speed up NLP stuff
+@tasks.loop(minutes=30.0)
+def task():
+    print('Fetching Everything')
+    stararticles = scrapeStar()
+    football = starFootball()
+    urls = []
+    for category in stararticles:
+        urls += list(stararticles[category].values())
+    articleBodies = {}
+    for url in urls:
+        articleBodies[url] = getArticleStar(url)
+    print(stararticles)
+    print(football)
+
+    r.hset("Star- Featured Stories Nation", None, None, stararticles['Featured Stories Nation'])
+    if(len(stararticles['Featured Stories Asean']) != 0):
+        r.hset("Star- Featured Stories Asean", None, None, stararticles['Featured Stories Asean'])
+    r.hset('Football', None, None, football)
+    r.hset('Article Bodies', None, None, articleBodies)
+
+    print(r.hgetall("Article Bodies"))
+
+task()
 bot.run(TOKEN)
