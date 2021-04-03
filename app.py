@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 from discord.ext import commands
 from discord.utils import get
 import requests
-
-from scraper import scrapeStar, starFootball
+from scraper import scrapeStar, starFootball, getArticleStar
+from nlpengine import createCloud
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -80,5 +80,26 @@ async def help(ctx):
     embed.add_field(name='!nytimes', value="Most Read Stories in the New York Times", inline=False)
     embed.add_field(name='!football', value="Football news from the star", inline=False)
     await ctx.channel.send(embed=embed)
+
+@bot.command(name='overview')
+async def overview(ctx):
+    await ctx.channel.send('''Here are major words that appeared in news articles this week.
+                            This might take a while as the NLP engine is scraping and processing news articles.
+                            ''')
+    articles = scrapeStar()
+    urls = []
+    for category in articles:
+        urls += list(articles[category].values())
+    print(urls)
+    articleData = [getArticleStar(url) for url in urls]
+    print(articleData)
+    cloudLocation = createCloud(articleData)
+    with open(cloudLocation, 'rb') as f:
+        picture = discord.File(f)
+        await ctx.channel.send(file=picture)
+
+@bot.command(name='bigplayers')
+async def bigplayers(ctx):
+    print('Who did the news talk about?')
 
 bot.run(TOKEN)

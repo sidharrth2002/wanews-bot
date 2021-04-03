@@ -4,6 +4,7 @@ import requests
 import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
+import re
 
 def configureSelenium():
     chrome_options = webdriver.ChromeOptions()
@@ -30,6 +31,11 @@ def scrapeStar():
 
     return stories
 
+def getArticleStar(url: str):
+    article = requests.get(url);
+    soup = BeautifulSoup(article.content, 'html.parser')
+    return ' '.join([p.text for p in soup.find(id='story-body').findChildren()])
+
 #page dynamically generated, have to use selenium
 def starFootball():
     #if on heroku, configure selenium first
@@ -54,3 +60,24 @@ def starFootball():
             footballNews[stripped] = story.get_attribute('href')
     # print(footballNews)
     return footballNews
+
+def malaysiakini():
+    URL = 'https://www.malaysiakini.com/'
+    classNames = {
+        'Top Story': 'jsx-4226912739 title',
+        'Top Stories': 'jsx-3163722522',
+        'Featured': 'jsx-2425286463 tabPanelTitle'
+    }
+
+def mkiniOpinionPieces():
+    URL = 'https://www.malaysiakini.com/en/latest/columns'
+    classNames = {
+        'Title': {
+            'tag': 'h3',
+            'class': 'jsx-196449950'
+        },
+        'Summary': {
+            'tag': 'div',
+            'class': 'jsx-196449950 summary"'
+        }
+    }
