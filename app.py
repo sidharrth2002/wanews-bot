@@ -94,9 +94,7 @@ async def overview(ctx):
     urls = []
     for category in articles:
         urls += list(articles[category].values())
-    print(urls)
     articleData = [getArticleStar(url) for url in urls]
-    print(articleData)
     cloudLocation = createCloud(articleData)
     with open(cloudLocation, 'rb') as f:
         picture = discord.File(f)
@@ -110,9 +108,7 @@ async def bigplayers(ctx):
     urls = []
     for category in articles:
         urls += list(articles[category].values())
-    print(urls)
     articleData = [getArticleStar(url) for url in urls]
-    print(articleData)
     cloudLocation = ner(articleData)
     with open(cloudLocation, 'rb') as f:
         picture = discord.File(f)

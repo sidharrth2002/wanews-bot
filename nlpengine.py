@@ -5,8 +5,10 @@ from textblob import TextBlob
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 from nltk.tokenize import sent_tokenize, word_tokenize
-import nltk
+import spacy
 import uuid
+
+nlp = spacy.load('en_core_web_sm')
 
 stopwords = ENGLISH_STOP_WORDS.union(['Malaysia', 'Malaysian', 'said', 'Datuk', 'Seri'])
 
@@ -26,20 +28,12 @@ def createCloud(text_list):
     return './wordclouds/blob.png'
 
 def ner(text_list):
-    allsentences = ' '.join(text_list)
-    sentences_tokenized = sent_tokenize(allsentences)
-    token_sentences = [word_tokenize(sent) for sent in sentences_tokenized]
-    pos_sentences = [nltk.pos_tag(sent) for sent in token_sentences]
-
-    chunked_sentences_binary = nltk.ne_chunk_sents(pos_sentences, binary=True)
-    named_entities = []
-    
-    for sent in chunked_sentences_binary:
-        for chunk in sent:
-            if hasattr(chunk, 'label') and chunk.label() == 'NE':
-                named_entities.append(' '.join(c[0] for c in chunk))
-
-    main_entities = WordCloud(stopwords=stopwords, background_color="black", width=800, height=400).generate(' '.join(list(dict.fromkeys(named_entities))))
+    print('Inside NER')
+    print(text_list)
+    doc = nlp(' '.join(text_list))
+    entities = [ent.text.replace(" ", "") if len(ent.text.split()) != 0 else ent.text for ent in list(doc.ents)] 
+    print(entities)
+    main_entities = WordCloud(stopwords=stopwords, background_color="black", width=800, height=400).generate(' '.join(list(entities)))
     plt.figure(figsize=(20,20))
     plt.imshow(main_entities, interpolation='bilinear')
     plt.axis('off')
