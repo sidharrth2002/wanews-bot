@@ -5,7 +5,7 @@ from discord.ext import commands, tasks
 from discord.utils import get
 import requests
 from scraper import scrapeStar, starFootball, getArticleStar
-from nlpengine import createCloud
+from nlpengine import createCloud, ner
 import datetime
 import redis
 
@@ -75,7 +75,6 @@ async def footballNews(ctx):
     embed=discord.Embed(title="Football News", description="Football News Scraped From the Star", color=0xff0000)
     for story in stories.keys():
         embed.add_field(name=story, value= f" [Read More]({stories[story]})", inline=False)
-    
     await ctx.channel.send(embed=embed)
 
 @bot.command(name='help')
@@ -89,9 +88,8 @@ async def help(ctx):
 
 @bot.command(name='overview')
 async def overview(ctx):
-    await ctx.channel.send('''Here are major words that appeared in news articles this week.
-                            This might take a while as the NLP engine is scraping and processing news articles.
-                            ''')
+    await ctx.channel.send('Here are major words that appeared in news articles this week.')
+    await ctx.channel.send('This might take a while as the NLP engine is scraping and processing news articles.')
     articles = scrapeStar()
     urls = []
     for category in articles:
@@ -106,7 +104,19 @@ async def overview(ctx):
 
 @bot.command(name='bigplayers')
 async def bigplayers(ctx):
-    print('Who did the news talk about?')
+    await ctx.channel.send('Who did the news talk about?')
+    await ctx.channel.send('The engine is scraping and processing...')
+    articles = scrapeStar()
+    urls = []
+    for category in articles:
+        urls += list(articles[category].values())
+    print(urls)
+    articleData = [getArticleStar(url) for url in urls]
+    print(articleData)
+    cloudLocation = ner(articleData)
+    with open(cloudLocation, 'rb') as f:
+        picture = discord.File(f)
+        await ctx.reply(file=picture)
 
 #scrape every half an hour and store in redis to speed up NLP stuff
 @tasks.loop(minutes=30.0)
