@@ -1,10 +1,12 @@
+'''
+Functions that scrape respective news websites and call selected APIs
+'''
+
 import os
 from sys import executable
 import requests
-import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
-import re
 
 def configureSelenium():
     chrome_options = webdriver.ChromeOptions()
@@ -44,22 +46,23 @@ def starFootball():
     else:
         driver = webdriver.Chrome()
     URL = 'https://www.thestar.com.my/sport'
-    driver.get(URL)
-    print(driver.title)
+    try:
+        driver.get(URL)
+        print(driver.title)
+        footballNews = {}
+        stories = driver.find_elements_by_xpath("//a[@data-content-category = 'Sport/Football']")
+        for story in stories:
+            if 'Soccer-' in story.get_attribute('data-content-title'):
+                stripped = story.get_attribute('data-content-title').split('Soccer-')[1]
+            else:
+                stripped = story.get_attribute('data-content-title')
 
-    footballNews = {}
-
-    stories = driver.find_elements_by_xpath("//a[@data-content-category = 'Sport/Football']")
-    for story in stories:
-        if 'Soccer-' in story.get_attribute('data-content-title'):
-            stripped = story.get_attribute('data-content-title').split('Soccer-')[1]
-        else:
-            stripped = story.get_attribute('data-content-title')
-
-        if stripped not in footballNews.keys():
-            footballNews[stripped] = story.get_attribute('href')
-    # print(footballNews)
-    return footballNews
+            if stripped not in footballNews.keys():
+                footballNews[stripped] = story.get_attribute('href')
+        return footballNews
+    except:
+        print('Something Went Wrong')
+        return {}
 
 def malaysiakini():
     URL = 'https://www.malaysiakini.com/'
