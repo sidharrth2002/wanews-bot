@@ -171,27 +171,27 @@ async def bigplayers(ctx):
 
 
 #scrape every half an hour and store in redis to speed up NLP stuff
-@tasks.loop(minutes=30.0)
-async def task():
-    #only run on local
-    #heroku version is paid
-    if (os.environ.get("VERSION") == 'DEVELOPMENT'):
-        print('Fetching Everything')
-        stararticles = scrapeStar()
-        football = starFootball()
-        urls = []
-        for category in stararticles:
-            urls += list(stararticles[category].values())
-        articleBodies = {}
-        for url in urls:
-            articleBodies[url] = getArticleStar(url)
+# @tasks.loop(minutes=30.0)
+# async def task():
+#     #only run on local
+#     #heroku version is paid
+#     if (os.environ.get("VERSION") == 'DEVELOPMENT'):
+#         print('Fetching Everything')
+#         stararticles = scrapeStar()
+#         football = starFootball()
+#         urls = []
+#         for category in stararticles:
+#             urls += list(stararticles[category].values())
+#         articleBodies = {}
+#         for url in urls:
+#             articleBodies[url] = getArticleStar(url)
 
-        r.hset("Star- Featured Stories Nation", None, None, stararticles['Featured Stories Nation'])
-        if(len(stararticles['Featured Stories Asean']) != 0):
-            r.hset("Star- Featured Stories Asean", None, None, stararticles['Featured Stories Asean'])
-        r.hset('Football', None, None, football)
-        r.hset('Article Bodies', None, None, articleBodies)
+#         r.hset("Star- Featured Stories Nation", None, None, stararticles['Featured Stories Nation'])
+#         if(len(stararticles['Featured Stories Asean']) != 0):
+#             r.hset("Star- Featured Stories Asean", None, None, stararticles['Featured Stories Asean'])
+#         r.hset('Football', None, None, football)
+#         r.hset('Article Bodies', None, None, articleBodies)
 
-        print(r.hgetall("Article Bodies"))
+#         print(r.hgetall("Article Bodies"))
 
 bot.run(TOKEN)
