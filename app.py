@@ -127,19 +127,6 @@ async def footballNews(ctx):
         embed.add_field(name="Oh boy, what a depressing day.", value='Random Quote: ' + getQuote())
     await ctx.channel.send(embed=embed)
 
-
-@bot.command(name='help')
-async def help(ctx):
-    embed=discord.Embed(title="Commands Available", description="Here are commands you can try.", color=0xff0000)
-    embed.add_field(name="!sports", value="Sports Headlines From Around the World", inline=False)
-    embed.add_field(name="!thestar", value="National headlines from the star", inline=False)
-    embed.add_field(name='!nytimes', value="Most Read Stories in the New York Times", inline=False)
-    embed.add_field(name='!football', value="Football news from the star", inline=False)
-    embed.add_field(name='!overview', value="Keywords in the news today", inline=False)
-    embed.add_field(name='!bigplayers', value="Who did the news talk about today?", inline=False)
-    await ctx.channel.send(embed=embed)
-
-
 @bot.command(name='overview')
 async def overview(ctx):
     await ctx.channel.send('Here are major words that appeared in news articles this week.')
@@ -169,7 +156,17 @@ async def bigplayers(ctx):
         picture = discord.File(f)
         await ctx.reply(file=picture)
 
-
+@bot.command(name='help')
+async def help(ctx):
+    embed=discord.Embed(title="Commands Available", description="Here are commands you can try.", color=0xff0000)
+    embed.add_field(name="!sports", value="Sports Headlines From Around the World", inline=False)
+    embed.add_field(name="!thestar", value="National headlines from the star", inline=False)
+    embed.add_field(name='!nytimes', value="Most Read Stories in the New York Times", inline=False)
+    embed.add_field(name='!football', value="Football news from the star", inline=False)
+    embed.add_field(name='!overview', value="Keywords in the news today", inline=False)
+    embed.add_field(name='!bigplayers', value="Who did the news talk about today?", inline=False)
+    embed.add_field(name='Interested in contributing?', value="This bot is protected by the MIT License and is a proud project in the open source community. Check out the code [here](https://github.com/sidharrth2002/news-bot). We are always open to pull requests.")
+    await ctx.channel.send(embed=embed)
 #scrape every half an hour and store in redis to speed up NLP stuff
 # @tasks.loop(minutes=30.0)
 # async def task():
